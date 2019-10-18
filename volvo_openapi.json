@@ -1,0 +1,660 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Volvo API",
+    "description": "API is used for connecting applications to Volvo backend.",
+    "termsOfService": "http://swagger.io/terms/",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "//vocapi.wirelesscar.net/customerapi/rest"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Vehicle",
+      "description": "Operations about vehicle"
+    }
+  ],
+  "paths": {
+    "/vehicles/{vin}/status": {
+      "get": {
+        "tags": [
+          "Vehicle"
+        ],
+        "summary": "Retrieve the status for a Volvo vehicle",
+        "operationId": "getStateByVehicleId",
+        "parameters": [
+          {
+            "name": "vin",
+            "in": "path",
+            "description": "The vin which is needed to retrieve the status",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VolvoStatusResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vehicles/{vin}/position": {
+      "get": {
+        "tags": [
+          "Vehicle"
+        ],
+        "summary": "Retrieves the current position for a Volvo vehicle",
+        "operationId": "getPositionByVehicleId",
+        "parameters": [
+          {
+            "name": "vin",
+            "in": "path",
+            "description": "The vin which is needed to retrieve the current position",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VolvoPositionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vehicles/{vin}/chargeLocations": {
+      "get": {
+        "tags": [
+          "Vehicle"
+        ],
+        "summary": "Retrieves the charge locations for a Volvo vehicle",
+        "operationId": "getChargeLocationsByVehicleId",
+        "parameters": [
+          {
+            "name": "vin",
+            "in": "path",
+            "description": "The vin which is needed to retrieve the charge locations",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VolvoChargeLocationsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Vehicle"
+        ],
+        "summary": "Update the charge locations for a Volvo vehicle",
+        "operationId": "postNewChargeSettings",
+        "parameters": [
+          {
+            "name": "vin",
+            "in": "path",
+            "description": "The vin which is needed to update the charge locations",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "later",
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/VolvoPutLocationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VolvoChargeLocationsResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name": "chargeLocationModel"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "VolvoPutLocationRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "plugInReminderEnabled": {
+            "type": "boolean"
+          },
+          "delayCharging": {
+            "$ref": "#/components/schemas/DelayCharging"
+          }
+        }
+      },
+      "DelayCharging": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stopTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "VolvoChargeLocationsResponse": {
+        "type": "object",
+        "properties": {
+          "chargingLocations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChargingLocation"
+            }
+          }
+        }
+      },
+      "ChargingLocation": {
+        "type": "object",
+        "properties": {
+          "chargeLocation": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "plugInReminderEnabled": {
+            "type": "boolean"
+          },
+          "position": {
+            "$ref": "#/components/schemas/Position"
+          },
+          "delayCharging": {
+            "$ref": "#/components/schemas/DelayCharging"
+          },
+          "status": {
+            "type": "string"
+          },
+          "vehicleAtChargingLocation": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Position": {
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "streetAddress": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "ISO2CountryCode": {
+            "type": "string"
+          },
+          "Region": {
+            "type": "string"
+          }
+        }
+      },
+      "VolvoPositionResponse": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "$ref": "#/components/schemas/Position"
+          },
+          "calculatedPosition": {
+            "$ref": "#/components/schemas/CalculatedPosition"
+          }
+        }
+      },
+      "CalculatedPosition": {
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "string"
+          },
+          "latitude": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "speed": {
+            "type": "string"
+          },
+          "heading": {
+            "type": "string"
+          }
+        }
+      },
+      "VolvoStatusResponse": {
+        "type": "object",
+        "properties": {
+          "averageFuelConsumption": {
+            "type": "number",
+            "format": "double"
+          },
+          "averageFuelConsumptionTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "averageSpeed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "averageSpeedTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "brakeFluid": {
+            "type": "string"
+          },
+          "brakeFluidTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "bulbFailures": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "bulbFailuresTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "carLocked": {
+            "type": "boolean"
+          },
+          "carLockedTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "connectionStatus": {
+            "type": "string"
+          },
+          "connectionStatusTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "distanceToEmpty": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "distanceToEmptyTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "doors": {
+            "$ref": "#/components/schemas/Doors"
+          },
+          "engineRunning": {
+            "type": "boolean"
+          },
+          "engineRunningTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fuelAmount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fuelAmountLevel": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fuelAmountLevelTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fuelAmountTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "heater": {
+            "$ref": "#/components/schemas/Heater"
+          },
+          "hvBattery": {
+            "$ref": "#/components/schemas/HvBattery"
+          },
+          "odometer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "odometerTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "parkedIndoor": {
+            "type": "boolean"
+          },
+          "parkedIndoorTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "remoteClimatizationStatus": {
+            "type": "string"
+          },
+          "remoteClimatizationStatusTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "serviceWarningStatus": {
+            "type": "string"
+          },
+          "serviceWarningStatusTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "theftAlarm": {
+            "$ref": "#/components/schemas/TheftAlarm"
+          },
+          "timeFullyAccessibleUntil": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "timePartiallyAccessibleUntil": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "tripMeter1": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tripMeter1Timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "tripMeter2": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tripMeter2Timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "tyrePressure": {
+            "$ref": "#/components/schemas/TyrePressure"
+          },
+          "washerFluidLevel": {
+            "type": "string"
+          },
+          "washerFluidLevelTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "windows": {
+            "$ref": "#/components/schemas/Windows"
+          }
+        }
+      },
+      "Doors": {
+        "type": "object",
+        "properties": {
+          "tailgateOpen": {
+            "type": "boolean"
+          },
+          "rearRightDoorOpen": {
+            "type": "boolean"
+          },
+          "rearLeftDoorOpen": {
+            "type": "boolean"
+          },
+          "frontRightDoorOpen": {
+            "type": "boolean"
+          },
+          "frontLeftDoorOpen": {
+            "type": "boolean"
+          },
+          "hoodOpen": {
+            "type": "boolean"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Heater": {
+        "type": "object",
+        "properties": {
+          "seatSelection": {
+            "$ref": "#/components/schemas/SeatSelection"
+          },
+          "status": {
+            "type": "string"
+          },
+          "timer1": {
+            "$ref": "#/components/schemas/Timer1"
+          },
+          "timer2": {
+            "$ref": "#/components/schemas/Timer2"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SeatSelection": {
+        "type": "object",
+        "properties": {
+          "frontDriverSide": {
+            "type": "boolean"
+          },
+          "frontPassengerSide": {
+            "type": "boolean"
+          },
+          "rearDriverSide": {
+            "type": "boolean"
+          },
+          "rearPassengerSide": {
+            "type": "boolean"
+          },
+          "rearMid": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Timer1": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "string"
+          },
+          "state": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Timer2": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "string"
+          },
+          "state": {
+            "type": "boolean"
+          }
+        }
+      },
+      "HvBattery": {
+        "type": "object",
+        "properties": {
+          "hvBatteryChargeStatusDerived": {
+            "type": "string"
+          },
+          "hvBatteryChargeStatusDerivedTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hvBatteryChargeModeStatus": {
+            "type": "string"
+          },
+          "hvBatteryChargeModeStatusTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hvBatteryChargeStatus": {
+            "type": "string"
+          },
+          "hvBatteryChargeStatusTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hvBatteryLevel": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hvBatteryLevelTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "distanceToHVBatteryEmpty": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "distanceToHVBatteryEmptyTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hvBatteryChargeWarning": {
+            "type": "string"
+          },
+          "hvBatteryChargeWarningTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "timeToHVBatteryFullyCharged": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timeToHVBatteryFullyChargedTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TheftAlarm": {
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TyrePressure": {
+        "type": "object",
+        "properties": {
+          "frontLeftTyrePressure": {
+            "type": "string"
+          },
+          "frontRightTyrePressure": {
+            "type": "string"
+          },
+          "rearLeftTyrePressure": {
+            "type": "string"
+          },
+          "rearRightTyrePressure": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Windows": {
+        "type": "object",
+        "properties": {
+          "frontLeftWindowOpen": {
+            "type": "boolean"
+          },
+          "frontRightWindowOpen": {
+            "type": "boolean"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rearLeftWindowOpen": {
+            "type": "boolean"
+          },
+          "rearRightWindowOpen": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}
